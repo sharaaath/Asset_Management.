@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Asset - {{ asset.name }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('assets.list') }}">Assets</a></li>
+        <li class="breadcrumb-item active">Assign</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-white border-bottom">
+                <h4 class="mb-0 fw-semibold"><i class="bi bi-person-plus"></i> Assign Asset</h4>
+            </div>
+            <div class="card-body">
+                <div class="bg-light p-3 rounded border-start border-4 border-info mb-3">
+                    <strong>Asset:</strong> {{ asset.name }}<br>
+                    <strong>Serial Number:</strong> {{ asset.serial_number }}
+                </div>
+                
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="employee_id" class="form-label">Select Employee *</label>
+                        <select class="form-select" id="employee_id" name="employee_id" required>
+                            <option value="">Choose an employee...</option>
+                            {% for employee in employees %}
+                            <option value="{{ employee.id }}">
+                                {{ employee.name }} ({{ employee.employee_id }}) - {{ employee.position or 'N/A' }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="4" maxlength="500" 
+                                  placeholder="Optional notes about this assignment..."></textarea>
+                        <small class="text-muted">Optional, max 500 characters</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Confirm Assignment
+                        </button>
+                        <a href="{{ url_for('assets.detail', asset_id=asset.id) }}" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

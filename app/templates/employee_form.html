@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}{% if employee %}Edit{% else %}Add{% endif %} Employee - Asset Management System{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('employees.list') }}">Employees</a></li>
+        <li class="breadcrumb-item active">{% if employee %}Edit{% else %}Add{% endif %} Employee</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-white border-bottom">
+                <h4 class="mb-0 fw-semibold"><i class="bi bi-person-{% if employee %}pencil{% else %}plus{% endif %}"></i> 
+                    {% if employee %}Edit{% else %}Add{% endif %} Employee
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="employee_id" class="form-label">Employee ID *</label>
+                        <input type="text" class="form-control" id="employee_id" name="employee_id" 
+                               value="{{ employee.employee_id if employee else '' }}" required maxlength="20">
+                        <small class="text-muted">Unique identifier (e.g., EMP001)</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               value="{{ employee.name if employee else '' }}" required maxlength="100">
+                        <small class="text-muted">Max 100 characters</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="position" class="form-label">Position</label>
+                        <input type="text" class="form-control" id="position" name="position" 
+                               value="{{ employee.position if employee else '' }}" maxlength="100">
+                        <small class="text-muted">Max 100 characters. e.g., Software Developer, Designer, Manager</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="company" class="form-label">Company</label>
+                        <input type="text" class="form-control" id="company" name="company" 
+                               value="{{ employee.company if employee else '' }}" maxlength="50">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Photo</label>
+                        <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                        <small class="text-muted">Optional: Upload employee photo (JPG, PNG, max 2MB)</small>
+                        {% if employee and employee.photo_url %}
+                        <div class="mt-2">
+                            <img src="{{ employee.photo_url }}" alt="Current photo" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
+                            <small class="text-muted d-block">Current photo</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> {% if employee %}Update{% else %}Save{% endif %} Employee
+                        </button>
+                        <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

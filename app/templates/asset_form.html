@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{% if asset %}Edit{% else %}Add{% endif %} Asset - Asset Management System{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('assets.list') }}">Assets</a></li>
+        <li class="breadcrumb-item active">{% if asset %}Edit{% else %}Add{% endif %} Asset</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-white border-bottom">
+                <h4 class="mb-0 fw-semibold"><i class="bi bi-{% if asset %}pencil{% else %}plus-circle{% endif %}"></i> 
+                    {% if asset %}Edit{% else %}Add{% endif %} Asset
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Asset Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               value="{{ asset.name if asset else '' }}" required maxlength="100">
+                        <small class="text-muted">Max 100 characters</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="serial_number" class="form-label">Serial Number *</label>
+                        <input type="text" class="form-control" id="serial_number" name="serial_number" 
+                               value="{{ asset.serial_number if asset else '' }}" required maxlength="50">
+                        <small class="text-muted">Max 50 characters</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category *</label>
+                        <input type="text" class="form-control" id="category" name="category" 
+                               value="{{ asset.category if asset else '' }}" 
+                               list="categoryList" required maxlength="50"
+                               placeholder="Select or type a new category">
+                        <datalist id="categoryList">
+                            <option value="Laptop">
+                            <option value="Desktop">
+                            <option value="Monitor">
+                            <option value="Keyboard">
+                            <option value="Mouse">
+                            <option value="Mobile">
+                            <option value="Tablet">
+                            <option value="Printer">
+                            <option value="Camera">
+                            <option value="Other">
+                        </datalist>
+                        <small class="text-muted">Max 50 characters. Type a new one or pick from suggestions.</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="purchased_from" class="form-label">Purchased From</label>
+                        <input type="text" class="form-control" id="purchased_from" name="purchased_from" 
+                               value="{{ asset.purchased_from if asset else '' }}" maxlength="50">
+                        <small class="text-muted">Max 50 characters</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="purchased_date" class="form-label">Purchased Date</label>
+                        <input type="date" class="form-control" id="purchased_date" name="purchased_date" 
+                               value="{{ asset.purchased_date.strftime('%Y-%m-%d') if asset and asset.purchased_date else '' }}">
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> {% if asset %}Update{% else %}Save{% endif %} Asset
+                        </button>
+                        <a href="{{ url_for('assets.list') }}" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Asset Management System{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card border-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-box-seam"></i> Total Assets</h5>
+                <h2 class="mb-0">{{ total_assets }}</h2>
+                <small class="text-muted">All registered assets</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card border-warning">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-people"></i> Assigned</h5>
+                <h2 class="mb-0">{{ assigned_assets }}</h2>
+                <small class="text-muted">Currently in use</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card border-success">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-check-circle"></i> Available</h5>
+                <h2 class="mb-0">{{ available_assets }}</h2>
+                <small class="text-muted">Ready for assignment</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100" style="cursor: pointer;" onclick="location.href='{{ url_for('assets.list') }}'">
+            <div class="card-body text-center">
+                <i class="bi bi-box-seam display-4 text-primary mb-3"></i>
+                <h3>{{ total_assets }}</h3>
+                <h5 class="card-title">Assets</h5>
+                <p class="text-muted mb-0">
+                    <span class="badge bg-success">{{ available_assets }} Available</span>
+                    <span class="badge bg-warning text-dark">{{ assigned_assets }} Assigned</span>
+                </p>
+            </div>
+            <div class="card-footer bg-transparent text-center">
+                <small class="text-primary"><i class="bi bi-arrow-right-circle"></i> Click to view all assets</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100" style="cursor: pointer;" onclick="location.href='{{ url_for('employees.list') }}'">
+            <div class="card-body text-center">
+                <i class="bi bi-people display-4 text-success mb-3"></i>
+                <h3>{{ total_employees }}</h3>
+                <h5 class="card-title">Employees</h5>
+                <p class="text-muted mb-0">
+                    <span class="badge bg-primary">{{ total_employees }} Total</span>
+                    <span class="badge bg-info text-dark">{{ employees_with_assets }} With Assets</span>
+                </p>
+            </div>
+            <div class="card-footer bg-transparent text-center">
+                <small class="text-success"><i class="bi bi-arrow-right-circle"></i> Click to view all employees</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if current_user.is_authenticated %}
+<div class="row mt-4">
+    <div class="col-12 text-center">
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('export.export_csv') }}" class="btn btn-outline-success">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Export CSV
+            </a>
+            <a href="{{ url_for('export.export_html') }}" class="btn btn-outline-info">
+                <i class="bi bi-file-earmark-code"></i> Export HTML Report
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

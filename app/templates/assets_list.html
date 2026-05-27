@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Assets - Asset Management System{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Assets</li>
+    </ol>
+</nav>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h4><i class="bi bi-box-seam"></i> All Assets ({{ assets|length }})</h4>
+            </div>
+        </div>
+        
+        <form method="GET" action="{{ url_for('assets.list') }}" class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" name="search" placeholder="Search by name, serial, category..." value="{{ search_query }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="category">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat }}" {% if category_filter == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="status">
+                    <option value="">All Status</option>
+                    <option value="available" {% if status_filter == 'available' %}selected{% endif %}>Available</option>
+                    <option value="assigned" {% if status_filter == 'assigned' %}selected{% endif %}>Assigned</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-filter"></i> Filter
+                </button>
+            </div>
+        </form>
+        
+        {% if current_user.is_authenticated %}
+        <div class="mb-3">
+            <a href="{{ url_for('assets.add') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add New Asset
+            </a>
+        </div>
+        {% endif %}
+        
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Serial Number</th>
+                        <th>Category</th>
+                        <th>Purchased From</th>
+                        <th>Purchased Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for asset in assets %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('assets.detail', asset_id=asset.id) }}" class="text-decoration-none">
+                                <strong>{{ asset.name }}</strong>
+                            </a>
+                        </td>
+                        <td><code>{{ asset.serial_number }}</code></td>
+                        <td><span class="badge bg-secondary">{{ asset.category }}</span></td>
+                        <td>{{ asset.purchased_from or '-' }}</td>
+                        <td>{{ asset.purchased_date.strftime('%Y-%m-%d') if asset.purchased_date else '-' }}</td>
+                        <td>
+                            {% if asset.assigned_to %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-person"></i> {{ asset.assigned_to.name }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Available
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('assets.detail', asset_id=asset.id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox display-6"></i>
+                            <p class="mb-0">No assets found</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

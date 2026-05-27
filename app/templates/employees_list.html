@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Employees - Asset Management System{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Employees</li>
+    </ol>
+</nav>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h4><i class="bi bi-people"></i> All Employees ({{ employees|length }})</h4>
+            </div>
+        </div>
+        
+        <form method="GET" action="{{ url_for('employees.list') }}" class="row g-3 mb-4">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" name="search" placeholder="Search by name, ID, position..." value="{{ search_query }}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" name="company">
+                    <option value="">All Companies</option>
+                    {% for comp in companies %}
+                    <option value="{{ comp }}" {% if company_filter == comp %}selected{% endif %}>{{ comp }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-filter"></i> Filter
+                </button>
+            </div>
+        </form>
+        
+        {% if current_user.is_authenticated %}
+        <div class="mb-3">
+            <a href="{{ url_for('employees.add') }}" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Add New Employee
+            </a>
+        </div>
+        {% endif %}
+        
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Employee</th>
+                        <th>Employee ID</th>
+                        <th>Position</th>
+                        <th>Company</th>
+                        <th>Current Assets</th>
+                        <th>Total History</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                {% if employee.photo_url %}
+                                    <img src="{{ employee.photo_url }}" alt="{{ employee.name }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                {% else %}
+                                    <div class="avatar-circle-sm me-2">{{ employee.initials }}</div>
+                                {% endif %}
+                                <a href="{{ url_for('employees.detail', employee_id=employee.id) }}" class="text-decoration-none">
+                                    <strong>{{ employee.name }}</strong>
+                                </a>
+                            </div>
+                        </td>
+                        <td><code>{{ employee.employee_id }}</code></td>
+                        <td>{{ employee.position or '-' }}</td>
+                        <td>{{ employee.company or '-' }}</td>
+                        <td>
+                            {% set current = [] %}
+                            {% for a in employee.assignments %}
+                                {% if a.returned_date is none %}
+                                    {% set _ = current.append(a) %}
+                                {% endif %}
+                            {% endfor %}
+                            <span class="badge bg-warning text-dark">{{ current|length }} In Use</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ employee.assignments|length }} Total</span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('employees.detail', employee_id=employee.id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-people display-6"></i>
+                            <p class="mb-0">No employees found</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

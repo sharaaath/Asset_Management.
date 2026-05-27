@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Return Asset - {{ asset.name }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('assets.list') }}">Assets</a></li>
+        <li class="breadcrumb-item active">Return</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-white border-bottom">
+                <h4 class="mb-0 fw-semibold"><i class="bi bi-check-circle"></i> Mark Asset as Returned</h4>
+            </div>
+            <div class="card-body">
+                <div class="bg-light p-3 rounded border-start border-4 border-warning mb-3">
+                    <strong>Asset:</strong> {{ asset.name }}<br>
+                    <strong>Serial Number:</strong> {{ asset.serial_number }}<br>
+                    <strong>Currently Assigned To:</strong> {{ assignment.employee.name }}<br>
+                    <strong>Assigned On:</strong> {{ assignment.assigned_date.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+                
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="return_notes" class="form-label">Return Notes</label>
+                        <textarea class="form-control" id="return_notes" name="return_notes" rows="4" maxlength="500" placeholder="Optional notes about the return..."></textarea>
+                        <small class="text-muted">Optional, max 500 characters</small>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success no-spinner">
+                            <i class="bi bi-check-circle"></i> Confirm Return
+                        </button>
+                        <a href="{{ url_for('assets.detail', asset_id=asset.id) }}" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
